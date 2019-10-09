@@ -1,13 +1,14 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+from bs4 import BeautifulSoup
 
 
 def search_url(url, content):
     options = Options()
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--incognito")
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
 
     options.add_experimental_option("detach", True)
 
@@ -24,8 +25,14 @@ def search_url(url, content):
     browser.get(browser.current_url)
     browser.find_element_by_class_name(
         "titleReviewBarItem").find_element_by_xpath("//a[@href='reviews?ref_=tt_ov_rt']").click()
+    browser.get(browser.current_url)
+    page_source = browser.page_source
 
-    # print(result_url)
+    page_reviews = BeautifulSoup(page_source, 'html.parser')
+
+    reviews = page_reviews.select("div", {"class": "lister-list"})
+
+    print(reviews)
 
 
 def main():
